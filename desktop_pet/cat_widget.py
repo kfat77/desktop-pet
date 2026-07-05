@@ -210,7 +210,6 @@ class CatWidget(QWidget):
         painter.save()
         painter.translate(0, current_y)
         
-        # 只绘制头部上方部分，营造"从框中探出"的感觉
         self._draw_full_cat(painter, peek=True, peek_progress=progress)
         
         painter.restore()
@@ -252,19 +251,22 @@ class CatWidget(QWidget):
         
         # 绘制身体（椭圆形）
         body_h = 35 * squash
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(self.cat_color))
         body_path = QPainterPath()
         body_path.addEllipse(QPoint(cx, cy + 30), 30, int(body_h))
-        painter.fillPath(body_path, QBrush(self.cat_color))
+        painter.drawPath(body_path)
         
         # 肚皮（浅色）
+        painter.setBrush(QBrush(self.ear_inner))
         belly_path = QPainterPath()
         belly_path.addEllipse(QPoint(cx, cy + 32), 18, int(body_h * 0.6))
-        painter.fillPath(belly_path, QBrush(self.ear_inner))
+        painter.drawPath(belly_path)
         
         # 绘制左右脚
-        foot_w, foot_h = 12, 8
-        painter.fillRect(int(cx - 22), int(cy + 55), foot_w, foot_h, self.cat_dark)
-        painter.fillRect(int(cx + 10), int(cy + 55), foot_w, foot_h, self.cat_dark)
+        painter.setBrush(QBrush(self.cat_dark))
+        painter.drawRect(int(cx - 22), int(cy + 55), 12, 8)
+        painter.drawRect(int(cx + 10), int(cy + 55), 12, 8)
         
         painter.restore()  # 恢复身体缩放
         
@@ -275,46 +277,54 @@ class CatWidget(QWidget):
         """绘制猫头"""
         head_r = 35
         
+        painter.setPen(Qt.NoPen)
+        
         # 主头圆
+        painter.setBrush(QBrush(self.cat_color))
         head_path = QPainterPath()
         head_path.addEllipse(QPoint(cx, cy), head_r, head_r)
-        painter.fillPath(head_path, QBrush(self.cat_color))
+        painter.drawPath(head_path)
         
         # 耳朵（三角形）
         ear_size = 20
         ear_offset = 22
         
         # 左耳
+        painter.setBrush(QBrush(self.cat_color))
         left_ear = QPainterPath()
         left_ear.moveTo(cx - ear_offset, cy - head_r + 10)
         left_ear.lineTo(cx - ear_offset - ear_size, cy - head_r - ear_size + 10)
         left_ear.lineTo(cx - ear_offset + 8, cy - head_r + 5)
         left_ear.closeSubpath()
-        painter.fillPath(left_ear, QBrush(self.cat_color))
+        painter.drawPath(left_ear)
         # 左耳内
+        painter.setBrush(QBrush(self.ear_inner))
         left_ear_inner = QPainterPath()
         left_ear_inner.moveTo(cx - ear_offset, cy - head_r + 12)
         left_ear_inner.lineTo(cx - ear_offset - ear_size + 5, cy - head_r - ear_size + 18)
         left_ear_inner.lineTo(cx - ear_offset + 5, cy - head_r + 8)
         left_ear_inner.closeSubpath()
-        painter.fillPath(left_ear_inner, QBrush(self.ear_inner))
+        painter.drawPath(left_ear_inner)
         
         # 右耳
+        painter.setBrush(QBrush(self.cat_color))
         right_ear = QPainterPath()
         right_ear.moveTo(cx + ear_offset, cy - head_r + 10)
         right_ear.lineTo(cx + ear_offset + ear_size, cy - head_r - ear_size + 10)
         right_ear.lineTo(cx + ear_offset - 8, cy - head_r + 5)
         right_ear.closeSubpath()
-        painter.fillPath(right_ear, QBrush(self.cat_color))
+        painter.drawPath(right_ear)
         # 右耳内
+        painter.setBrush(QBrush(self.ear_inner))
         right_ear_inner = QPainterPath()
         right_ear_inner.moveTo(cx + ear_offset, cy - head_r + 12)
         right_ear_inner.lineTo(cx + ear_offset + ear_size - 5, cy - head_r - ear_size + 18)
         right_ear_inner.lineTo(cx + ear_offset - 5, cy - head_r + 8)
         right_ear_inner.closeSubpath()
-        painter.fillPath(right_ear_inner, QBrush(self.ear_inner))
+        painter.drawPath(right_ear_inner)
         
         # 条纹（头顶）
+        painter.setPen(QPen(self.cat_dark))
         stripe_pen = QPen(self.cat_dark)
         stripe_pen.setWidth(3)
         stripe_pen.setCapStyle(Qt.RoundCap)
@@ -326,17 +336,20 @@ class CatWidget(QWidget):
         self._draw_eyes(painter, cx, cy)
         
         # 鼻子
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(self.nose_color))
         nose_path = QPainterPath()
         nose_path.moveTo(cx - 5, cy + 5)
         nose_path.lineTo(cx + 5, cy + 5)
         nose_path.lineTo(cx, cy + 12)
         nose_path.closeSubpath()
-        painter.fillPath(nose_path, QBrush(self.nose_color))
+        painter.drawPath(nose_path)
         
         # 嘴巴
         mouth_pen = QPen(QColor(80, 60, 40))
         mouth_pen.setWidth(2)
         painter.setPen(mouth_pen)
+        painter.setBrush(Qt.NoBrush)
         painter.drawLine(cx, cy + 12, cx - 6, cy + 18)
         painter.drawLine(cx, cy + 12, cx + 6, cy + 18)
         
@@ -345,8 +358,12 @@ class CatWidget(QWidget):
         
         # 腮红
         blush = QColor(255, 180, 180, 80)
-        painter.fillEllipse(cx - 28, cy + 2, 12, 8, QBrush(blush))
-        painter.fillEllipse(cx + 16, cy + 2, 12, 8, QBrush(blush))
+        painter.setBrush(QBrush(blush))
+        painter.setPen(Qt.NoPen)
+        painter.drawEllipse(cx - 28, cy + 2, 12, 8)
+        painter.drawEllipse(cx + 16, cy + 2, 12, 8)
+        painter.setBrush(Qt.NoBrush)
+        painter.setPen(QPen())
     
     def _draw_eyes(self, painter: QPainter, cx, cy):
         """绘制眼睛"""
@@ -355,28 +372,37 @@ class CatWidget(QWidget):
             pen = QPen(self.eye_color)
             pen.setWidth(3)
             painter.setPen(pen)
+            painter.setBrush(Qt.NoBrush)
             painter.drawArc(cx - 20, cy - 8, 16, 10, 0, 180 * 16)
             painter.drawArc(cx + 4, cy - 8, 16, 10, 0, 180 * 16)
         else:
             # 睁眼 - 圆形 + 瞳孔 + 高光
+            painter.setPen(Qt.NoPen)
             # 左眼白
-            painter.fillEllipse(cx - 18, cy - 10, 14, 16, QBrush(Qt.white))
+            painter.setBrush(QBrush(Qt.white))
+            painter.drawEllipse(cx - 18, cy - 10, 14, 16)
             # 右眼白
-            painter.fillEllipse(cx + 4, cy - 10, 14, 16, QBrush(Qt.white))
+            painter.drawEllipse(cx + 4, cy - 10, 14, 16)
             
             # 瞳孔
-            painter.fillEllipse(cx - 14, cy - 6, 8, 10, QBrush(self.eye_color))
-            painter.fillEllipse(cx + 8, cy - 6, 8, 10, QBrush(self.eye_color))
+            painter.setBrush(QBrush(self.eye_color))
+            painter.drawEllipse(cx - 14, cy - 6, 8, 10)
+            painter.drawEllipse(cx + 8, cy - 6, 8, 10)
             
             # 高光
-            painter.fillEllipse(cx - 12, cy - 4, 3, 4, QBrush(Qt.white))
-            painter.fillEllipse(cx + 10, cy - 4, 3, 4, QBrush(Qt.white))
+            painter.setBrush(QBrush(Qt.white))
+            painter.drawEllipse(cx - 12, cy - 4, 3, 4)
+            painter.drawEllipse(cx + 10, cy - 4, 3, 4)
+            
+            painter.setBrush(Qt.NoBrush)
+            painter.setPen(QPen())
     
     def _draw_whiskers(self, painter: QPainter, cx, cy):
         """绘制胡须"""
         pen = QPen(self.whisker_color)
         pen.setWidth(1)
         painter.setPen(pen)
+        painter.setBrush(Qt.NoBrush)
         
         # 左边胡须
         painter.drawLine(cx - 25, cy + 8, cx - 45, cy + 5)
@@ -394,6 +420,7 @@ class CatWidget(QWidget):
         tail_pen.setWidth(6)
         tail_pen.setCapStyle(Qt.RoundCap)
         painter.setPen(tail_pen)
+        painter.setBrush(Qt.NoBrush)
         
         angle = math.radians(self._tail_angle + 180)
         tip_x = cx + int(40 * math.sin(angle))
@@ -411,6 +438,7 @@ class CatWidget(QWidget):
         painter.setFont(font)
         color = QColor(255, 100, 100, self._meow_alpha)
         painter.setPen(color)
+        painter.setBrush(Qt.NoBrush)
         
         # 文字在小猫上方
         text = self._meow_text

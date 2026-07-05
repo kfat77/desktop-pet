@@ -66,28 +66,32 @@ class TrayApp(QObject):
         painter = QPainter(pixmap)
         painter.setRenderHint(QPainter.Antialiasing)
         
-        # 绘制猫脸
         cat_color = QColor(255, 183, 77)
+        painter.setBrush(cat_color)
+        painter.setPen(Qt.NoPen)
         
         # 头
-        painter.fillEllipse(8, 12, 48, 40, cat_color)
+        painter.drawEllipse(8, 12, 48, 40)
         
         # 耳朵
-        painter.fillPolygon([
+        painter.drawPolygon([
             QPoint(12, 20), QPoint(4, 4), QPoint(22, 14)
-        ], cat_color)
-        painter.fillPolygon([
+        ])
+        painter.drawPolygon([
             QPoint(52, 20), QPoint(60, 4), QPoint(42, 14)
-        ], cat_color)
+        ])
         
         # 眼睛
-        painter.fillEllipse(20, 22, 8, 10, Qt.white)
-        painter.fillEllipse(36, 22, 8, 10, Qt.white)
-        painter.fillEllipse(23, 25, 4, 5, QColor(60, 40, 20))
-        painter.fillEllipse(39, 25, 4, 5, QColor(60, 40, 20))
+        painter.setBrush(Qt.white)
+        painter.drawEllipse(20, 22, 8, 10)
+        painter.drawEllipse(36, 22, 8, 10)
+        painter.setBrush(QColor(60, 40, 20))
+        painter.drawEllipse(23, 25, 4, 5)
+        painter.drawEllipse(39, 25, 4, 5)
         
         # 鼻子
-        painter.fillEllipse(30, 34, 4, 3, QColor(255, 130, 140))
+        painter.setBrush(QColor(255, 130, 140))
+        painter.drawEllipse(30, 34, 4, 3)
         
         painter.end()
         
